@@ -6,20 +6,22 @@ import {API_KEY, baseURL} from "../utils/constants.js";
 const Data = () => {
     const [weatherInfo, setWeatherInfo] = useState({});
     const [message, setMessage] = useState('Enter city name');
-    const getWeather = (city) => {
-        fetch(`${baseURL}?q=${city}&appid=${API_KEY}&units=metric`)
-            .then(res => res.json())
-            .then(data => {
-                setWeatherInfo({
-                    city: data.name,
-                    country: data.sys.country,
-                    temp: data.main.temp,
-                    pressure: data.main.pressure,
-                    sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString()
-                });
-                setMessage('')
-            })
-            .catch(() => setMessage('Enter valid city name'))
+    const getWeather = async (city) => {
+        try {
+            const response = await fetch(`${baseURL}?q=${city}&appid=${API_KEY}&units=metric`);
+            const data = await response.json();
+            setWeatherInfo({
+                city: data.name,
+                country: data.sys.country,
+                temp: data.main.temp,
+                pressure: data.main.pressure,
+                sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString()
+            });
+            setMessage('')
+        } catch (e) {
+            console.log(e);
+            setMessage('Enter valid city name')
+        }
     };
 
     return (
